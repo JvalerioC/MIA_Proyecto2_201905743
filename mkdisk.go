@@ -146,39 +146,49 @@ func mkdisk(params []string) {
 
 }
 
-func read_MBR(path string) MBR {
+func read_MBR(path string) (MBR, bool) {
+	mbr := MBR{}
 	disk, err := os.Open(path)
 	if err != nil {
 		fmt.Println("Error abriendo el archivo")
+		disk.Close()
+		return mbr, false
 	}
 	_, err1 := disk.Seek(0, io.SeekStart)
 	if err1 != nil {
 		fmt.Println("Error posicionando el puntero")
+		disk.Close()
+		return mbr, false
 	}
-	mbr := MBR{}
+
 	err2 := binary.Read(disk, binary.LittleEndian, &mbr)
 	if err2 != nil {
 		fmt.Println("Error al leer el mbr")
+		disk.Close()
+		return mbr, false
 	}
 	disk.Close()
-	return mbr
+	return mbr, true
 }
 
 func write_MBR(mbr MBR, path string) bool {
 	disk, err := os.OpenFile(path, os.O_RDWR, 0664)
 	if err != nil {
 		fmt.Println("Error abriendo el archivo")
+		disk.Close()
 		return false
 	}
 	_, err1 := disk.Seek(int64(0), io.SeekStart)
 	if err1 != nil {
 		fmt.Println("Error posicionando el puntero")
+		disk.Close()
 		return false
 	}
 	// Se escribe el mbr en el archivo
 	err = binary.Write(disk, binary.LittleEndian, mbr)
 	if err != nil {
 		fmt.Println("Error al escribir el mbr")
+		disk.Close()
 		return false
 	}
 	disk.Close()

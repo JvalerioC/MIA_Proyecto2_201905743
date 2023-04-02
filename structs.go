@@ -14,14 +14,11 @@ type Partition struct {
 
 // struct de tamano 215 bytes
 type MBR struct {
-	Mbr_tamano         [10]byte  //tamano, valor maximo 1GB = 1073741824 bytes
-	Mbr_fecha_creacion [20]byte  //formato DD/MM/YYYY hh:mm:ss
-	Mbr_dsk_signature  [4]byte   //tamano 10, numero aleatorio entre 0 y 9999
-	Dsk_fit            [1]byte   //tamano 1, valores B, F, W
-	Mbr_partition_1    Partition //tamano 45
-	Mbr_partition_2    Partition //tamano 45
-	Mbr_partition_3    Partition //tamano 45
-	Mbr_partition_4    Partition //tamano 45
+	Mbr_tamano         [10]byte     //tamano, valor maximo 1GB = 1073741824 bytes
+	Mbr_fecha_creacion [20]byte     //formato DD/MM/YYYY hh:mm:ss
+	Mbr_dsk_signature  [4]byte      //tamano 10, numero aleatorio entre 0 y 9999
+	Dsk_fit            [1]byte      //tamano 1, valores B, F, W
+	Mbr_Partition      [4]Partition // tamano 180 bytes
 }
 
 // struct de tamano 55 bytes
@@ -55,7 +52,7 @@ type SuperBloque struct {
 
 }
 
-// struct de tamano 95 bytes
+// struct de tamano 216 bytes, segun el programa
 type Inodo struct {
 	I_uid   [3]byte  //tamano 3 bytes, valor del id del usuario
 	I_gid   [2]byte  //tamano 2 bytes, valor del id del grupo
@@ -63,7 +60,7 @@ type Inodo struct {
 	I_atime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
 	I_ctime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
 	I_mtime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
-	I_block [16]byte //tamano 16 bytes, array de posiciones
+	I_block [16]int  //tamano 16 int, array de posiciones
 	I_type  [1]byte  //tamano 1 bytes, valor 1:archivo, 0:carpeta
 	I_perm  [3]byte  //tamano 3 bytes, valor de los permisos
 }
@@ -82,4 +79,23 @@ type B_Carpeta struct {
 // struct de tamano 64 bytes
 type B_Archivo struct {
 	B_content [64]byte //tamano 64 bytes
+}
+
+// struct para los montajes
+type itemMount struct {
+	Part   Partition //particion que fue montada, creo que solo neceesito el nombre y donde inicia
+	Id     string    //id que identifica la montura
+	Path   string    //para saber la ruta del disco, reportes
+	Number int       //para saber que numero tiene asociado
+}
+
+// struct para el login
+type Usuario struct {
+	Iniciado  bool
+	Admin     int
+	User      string
+	LoginItem itemMount
+	Grupo     string
+	Grupo_id  int
+	User_id   int
 }

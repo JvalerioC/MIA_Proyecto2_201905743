@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+var PartMount []itemMount
+var disc_counter int
+
+//var LoginUser Usuario
+
 func main() {
 	flag := true
 	fmt.Println("**********************************************************")

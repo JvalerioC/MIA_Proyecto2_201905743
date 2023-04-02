@@ -20,17 +20,20 @@ func analizador(entrada string) {
 		//fmt.Println(element)
 		result[i] = element
 	}
+	//se pasa a minusculas la primera posicion de la entrada para saber el comando
 	result[0] = strings.ToLower(result[0])
 
 	//aqui podemos empezar a analizar el primer valor de la entrada
 	if result[0] == "mkdisk" {
 		mkdisk(result[1:])
 	} else if result[0] == "rmdisk" {
-		rmdisk(result)
+		rmdisk(result[1:])
 	} else if result[0] == "fdisk" {
-		fdisk(result)
+		fdisk(result[1:])
 	} else if result[0] == "mount" {
-		mount(result)
+		mount(result[1:])
+	} else if result[0] == "rep" {
+		rep(result[1:])
 	} else {
 		fmt.Println("El comando ingresado no es valido")
 		return
