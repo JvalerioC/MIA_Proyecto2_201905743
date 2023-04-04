@@ -52,28 +52,28 @@ type SuperBloque struct {
 
 }
 
-// struct de tamano 216 bytes, segun el programa
+// struct de tamano 240 bytes, segun el programa
 type Inodo struct {
-	I_uid   [3]byte  //tamano 3 bytes, valor del id del usuario
-	I_gid   [2]byte  //tamano 2 bytes, valor del id del grupo
-	I_size  [10]byte //tamano 10 bytes, valor del tamano del archivo
-	I_atime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
-	I_ctime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
-	I_mtime [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
-	I_block [16]int  //tamano 16 int, array de posiciones
-	I_type  [1]byte  //tamano 1 bytes, valor 1:archivo, 0:carpeta
-	I_perm  [3]byte  //tamano 3 bytes, valor de los permisos
+	I_uid   [3]byte      //tamano 3 bytes, valor del id del usuario
+	I_gid   [3]byte      //tamano 3 bytes, valor del id del grupo
+	I_size  [10]byte     //tamano 10 bytes, valor del tamano del archivo
+	I_atime [20]byte     //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
+	I_ctime [20]byte     //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
+	I_mtime [20]byte     //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
+	I_block [16][10]byte //tamano 16 *10 bytes, array de posiciones
+	I_type  [1]byte      //tamano 1 bytes, valor 1:archivo, 0:carpeta
+	I_perm  [3]byte      //tamano 3 bytes, valor de los permisos
 }
 
-// struct de tamano 30
+// struct de tamano 16
 type B_Contenido struct {
-	B_name  [20]byte //tamano 12 bytes, nombre del archivo
-	B_inodo [10]byte //tamano 10 bytes, valor del inodo
+	B_name  [12]byte //tamano 12 bytes, nombre del archivo
+	B_inodo [4]byte  //tamano 4 bytes, valor del inodo
 }
 
-// struct de tamaño 120 bytes
+// struct de tamaño 64 bytes
 type B_Carpeta struct {
-	B_content [4]B_Contenido //tamano 120 bytes
+	B_content [4]B_Contenido //tamano 64 bytes
 }
 
 // struct de tamano 64 bytes

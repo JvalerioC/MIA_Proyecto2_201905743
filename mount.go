@@ -44,6 +44,7 @@ func mount(params []string) {
 	i_mount := itemMount{}
 	for i := 0; i < 4; i++ {
 		name_ := string(mbr.Mbr_Partition[i].Part_name[:])
+		name_ = strings.TrimRight(name_, "\x00")
 		if name_ == name {
 			if mbr.Mbr_Partition[i].Part_status[0] == '1' {
 				fmt.Println("Error, la particion ya esta montada")
@@ -61,14 +62,14 @@ func mount(params []string) {
 		fmt.Println("no existe una particion  con el nombre ingresado")
 		return
 	}
-	letter := "A"
-	if count_status_disk == 0 {
+	letter := ""
+	if count_status_disk == 1 {
 		letter = "A"
-	} else if count_status_disk == 1 {
-		letter = "B"
 	} else if count_status_disk == 2 {
-		letter = "C"
+		letter = "B"
 	} else if count_status_disk == 3 {
+		letter = "C"
+	} else if count_status_disk == 4 {
 		letter = "D"
 	}
 
