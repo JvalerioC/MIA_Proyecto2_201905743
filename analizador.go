@@ -8,7 +8,7 @@ import (
 
 func analizador(entrada string) {
 	//expresion regular para separar por espacios sin incluir los espacios de que estan entre comillas
-	regex := regexp.MustCompile(`\S+`)
+	regex := regexp.MustCompile(`\S+="[^"]*"|\S+`)
 	//se buscan todas las coincidencias de la entrada
 	matches := regex.FindAllStringSubmatch(entrada, -1)
 
@@ -39,17 +39,17 @@ func analizador(entrada string) {
 	} else if result[0] == "mkfs" {
 		mkfs(result[1:])
 	} else if result[0] == "login" {
-		rep(result[1:])
+		login(result[1:])
 	} else if result[0] == "logout" {
-		rep(result[1:])
+		logout()
 	} else if result[0] == "mkgrp" {
-		rep(result[1:])
+		mkgrp(result[1:])
 	} else if result[0] == "rmgrp" {
-		rep(result[1:])
+		rmgrp(result[1:])
 	} else if result[0] == "mkusr" {
-		rep(result[1:])
+		mkusr(result[1:])
 	} else if result[0] == "rmusr" {
-		rep(result[1:])
+		rmusr(result[1:])
 	} else {
 		fmt.Println("El comando ingresado no es valido")
 		return

@@ -41,8 +41,8 @@ type SuperBloque struct {
 	S_mtime             [20]byte //tamano 20 bytes, //formato DD/MM/YYYY hh:mm:ss
 	S_mnt_count         [1]byte  //tamano 1 byte,
 	S_magic             [6]byte  //tamano 5 bytes,valor 6,2,1,6,7
-	S_inode_size        [1]byte  //tamano 1 byte, valor del tamano del inodo
-	S_block_size        [1]byte  //tamano 1 byte, valor del tamano del bloque
+	S_inode_size        [3]byte  //tamano 1 byte, valor del tamano del inodo
+	S_block_size        [3]byte  //tamano 1 byte, valor del tamano del bloque
 	S_first_ino         [10]byte //tamano 10 bytes, valor del primer inodo
 	S_first_blo         [10]byte //tamano 10 bytes, valor del primer bloque
 	S_bm_inode_start    [10]byte //tamano 10 bytes, valor del inicio del bitmap de inodos
@@ -92,10 +92,10 @@ type itemMount struct {
 // struct para el login
 type Usuario struct {
 	Iniciado  bool
-	Admin     int
+	Admin     bool
 	User      string
 	LoginItem itemMount
 	Grupo     string
-	Grupo_id  int
-	User_id   int
+	Grupo_id  string
+	User_id   string
 }

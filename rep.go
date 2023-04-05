@@ -62,14 +62,14 @@ func rep(params []string) {
 		fmt.Println("Error, creando el directorio, rep")
 		return
 	}
-	//verificamos si el archivo existe o no, en este caso el reporte
+	/* //verificamos si el archivo existe o no, en este caso el reporte
 	_, err1 := os.Stat(path)
 	if os.IsNotExist(err1) {
 		//fmt.Println("Error, ")
 	} else {
 		fmt.Println("Error, el archivo ya existe")
 		return
-	}
+	} */
 
 	//se verifica el nombre del reporte para saber que reporte crear
 	if name == "disk" {

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unsafe"
 )
 
 // funcion para leer el mbr
@@ -261,4 +262,232 @@ func read_b_archivo(path string, position int) (B_Archivo, bool) {
 	}
 	disk.Close()
 	return bloque, true
+}
+
+// funcion para escribir un bloque archivo
+func write_b_archivo(barchivo B_Archivo, position int) bool {
+
+	disk, err := os.OpenFile(ItemLogin.LoginItem.Path, os.O_RDWR, 0664)
+	if err != nil {
+		fmt.Println("Error abriendo el archivo, ba")
+		disk.Close()
+		return false
+	}
+	//se posiciona el puntero en la posicion del primer bloque libre
+
+	_, err1 := disk.Seek(int64(position), io.SeekStart)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	// Se escribe el mbr en el archivo
+	err = binary.Write(disk, binary.LittleEndian, barchivo)
+	if err != nil {
+		fmt.Println("Error al escribir el bloque archivo, ba")
+		disk.Close()
+		return false
+	}
+	disk.Close()
+	return true
+}
+
+// funcion para escribir un bloque carpeta
+func write_b_carpeta(bcarpeta B_Carpeta, position int) bool {
+
+	disk, err := os.OpenFile(ItemLogin.LoginItem.Path, os.O_RDWR, 0664)
+	if err != nil {
+		fmt.Println("Error abriendo el archivo, ba")
+		disk.Close()
+		return false
+	}
+	//se posiciona el puntero en la posicion del primer bloque libre
+
+	_, err1 := disk.Seek(int64(position), io.SeekStart)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	// Se escribe el mbr en el archivo
+	err = binary.Write(disk, binary.LittleEndian, bcarpeta)
+	if err != nil {
+		fmt.Println("Error al escribir el bloque archivo, ba")
+		disk.Close()
+		return false
+	}
+	disk.Close()
+	return true
+}
+
+// funcion para escribir un inodo
+func write_inodo(inodo Inodo, position int) bool {
+	disk, err := os.OpenFile(ItemLogin.LoginItem.Path, os.O_RDWR, 0664)
+	if err != nil {
+		fmt.Println("Error abriendo el archivo, ba")
+		disk.Close()
+		return false
+	}
+	//se posiciona el puntero en la posicion del primer bloque libre
+
+	_, err1 := disk.Seek(int64(position), io.SeekStart)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	// Se escribe el mbr en el archivo
+	err = binary.Write(disk, binary.LittleEndian, inodo)
+	if err != nil {
+		fmt.Println("Error al escribir el bloque archivo, ba")
+		disk.Close()
+		return false
+	}
+	disk.Close()
+	return true
+}
+
+// funcion para escribir en el bitmap de inodos
+func write_bitmap_inodos() bool {
+	disk, err := os.OpenFile(ItemLogin.LoginItem.Path, os.O_RDWR, 0664)
+	if err != nil {
+		fmt.Println("Error abriendo el archivo, ba")
+		disk.Close()
+		return false
+	}
+	//se posiciona el puntero en la posicion del primer bloque libre
+	sb, flag := read_sb(ItemLogin.LoginItem.Path, ItemLogin.LoginItem.Part.Part_start)
+	if !flag {
+		fmt.Println("Error leyendo el superbloque")
+		disk.Close()
+		return false
+	}
+	//se obtiene el primer inodo libre y la posicion del bitmap de inodos
+	c1 := string(sb.S_first_ino[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_free_ino, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	c1 = string(sb.S_bm_inode_start[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_bitmap_inodos, err1 := strconv.Atoi(c1)
+
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	_, err = disk.Seek(int64(posicion_bitmap_inodos+(int(unsafe.Sizeof(B_Archivo{}))*posicion_free_ino)), io.SeekStart)
+	if err != nil {
+		fmt.Println("Error posicionando el puntero bitmap inodos, mkfs")
+		return false
+	}
+
+	err = binary.Write(disk, binary.LittleEndian, '1')
+	if err != nil {
+		fmt.Println("Error al escribir el bitmap de bloques, mkfs")
+		return false
+	}
+	//se actualiza el superbloque
+	c1 = string(sb.S_free_inodes_count[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	free_inodes_count, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		return false
+	}
+	free_inodes_count -= 1
+	posicion_free_ino += 1
+	copy(sb.S_inode_start[:], []byte(strconv.Itoa(posicion_free_ino)))
+	copy(sb.S_free_inodes_count[:], []byte(strconv.Itoa(free_inodes_count)))
+	c1 = string(ItemLogin.LoginItem.Part.Part_start[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_superbloque, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		return false
+	}
+	flag = write_sb(sb, ItemLogin.LoginItem.Path, posicion_superbloque)
+	if !flag {
+		fmt.Println("Error escribiendo el superbloque")
+		return false
+	}
+	disk.Close()
+	return true
+}
+
+// funcion para escribir en el bitmap de bloques
+func write_bitmap_bloques() bool {
+	disk, err := os.OpenFile(ItemLogin.LoginItem.Path, os.O_RDWR, 0664)
+	if err != nil {
+		fmt.Println("Error abriendo el archivo, ba")
+		disk.Close()
+		return false
+	}
+	//se posiciona el puntero en la posicion del primer bloque libre
+	sb, flag := read_sb(ItemLogin.LoginItem.Path, ItemLogin.LoginItem.Part.Part_start)
+	if !flag {
+		fmt.Println("Error leyendo el superbloque")
+		disk.Close()
+		return false
+	}
+	//se obtiene el primer bloque libre y la posicion del bitmap de bloques
+	c1 := string(sb.S_first_blo[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_free_block, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	c1 = string(sb.S_bm_block_start[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_bitmap_bloques, err1 := strconv.Atoi(c1)
+
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		disk.Close()
+		return false
+	}
+	_, err = disk.Seek(int64(posicion_bitmap_bloques+posicion_free_block), io.SeekStart)
+	if err != nil {
+		fmt.Println("Error posicionando el puntero bitmap bloques, mkfs")
+		return false
+	}
+
+	err = binary.Write(disk, binary.LittleEndian, '1')
+	if err != nil {
+		fmt.Println("Error al escribir el bitmap de bloques, mkfs")
+		return false
+	}
+	//se actualiza el superbloque
+	c1 = string(sb.S_free_blocks_count[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	free_blocks_count, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		return false
+	}
+	free_blocks_count -= 1
+	posicion_free_block += 1
+	copy(sb.S_first_blo[:], []byte(strconv.Itoa(posicion_free_block)))
+	copy(sb.S_free_blocks_count[:], []byte(strconv.Itoa(free_blocks_count)))
+	c1 = string(ItemLogin.LoginItem.Part.Part_start[:])
+	c1 = strings.TrimRight(c1, "\x00")
+	posicion_superbloque, err1 := strconv.Atoi(c1)
+	if err1 != nil {
+		fmt.Println("Error posicionando el puntero, ba")
+		return false
+	}
+	flag = write_sb(sb, ItemLogin.LoginItem.Path, posicion_superbloque)
+	if !flag {
+		fmt.Println("Error escribiendo el superbloque")
+		return false
+	}
+
+	disk.Close()
+	return true
 }

@@ -83,8 +83,8 @@ func mkfs(params []string) {
 	sb.S_magic[3] = '6'
 	sb.S_magic[4] = '7'
 	//vamo a probar esta nueva forma de copiar
-	copy(sb.S_inode_size[:], []byte(strconv.Itoa(int(unsafe.Sizeof(Inodo{})))))
-	copy(sb.S_block_size[:], []byte(strconv.Itoa(int(unsafe.Sizeof(B_Carpeta{})))))
+	copy(sb.S_inode_size[:], strconv.Itoa(int(unsafe.Sizeof(Inodo{}))))
+	copy(sb.S_block_size[:], strconv.Itoa(int(unsafe.Sizeof(B_Carpeta{}))))
 	sb.S_first_ino[0] = '0'
 	sb.S_first_blo[0] = '0'
 	c1 = string(item.Part.Part_start[:])
@@ -159,8 +159,8 @@ func mkfs(params []string) {
 	users := "1,G,root\n1,U,root,root,123\n"
 	copy(ba.B_content[:], users)
 	c1 = strconv.Itoa(len(users))
-	copy(inodo2.I_size[:], []byte(c1))
-	copy(inodo.I_size[:], []byte(c1))
+	copy(inodo2.I_size[:], c1)
+	copy(inodo.I_size[:], c1)
 
 	sb.S_first_blo[0] = '2'
 

@@ -9,8 +9,7 @@ import (
 
 var PartMount []itemMount
 var disc_counter int
-
-//var LoginUser Usuario
+var ItemLogin Usuario
 
 func main() {
 	flag := true
@@ -31,6 +30,10 @@ func main() {
 			continue
 		} else if entrada[0] == '#' {
 			fmt.Println(entrada)
+			continue
+		} else if entrada == "pause" {
+			fmt.Println("Presione enter para continuar...")
+			fmt.Scanln()
 			continue
 		}
 		analizador(entrada)
