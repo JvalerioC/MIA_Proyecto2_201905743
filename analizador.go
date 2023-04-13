@@ -50,6 +50,10 @@ func analizador(entrada string) {
 		mkusr(result[1:])
 	} else if result[0] == "rmusr" {
 		rmusr(result[1:])
+	} else if result[0] == "mkfile" {
+		mkfile(result[1:])
+	} else if result[0] == "mkdir" {
+		mkdir(result[1:])
 	} else {
 		fmt.Println("El comando ingresado no es valido")
 		return
