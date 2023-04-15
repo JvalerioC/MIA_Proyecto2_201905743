@@ -7,6 +7,117 @@ import (
 	"unsafe"
 )
 
+func login2(user string, password string, id string) bool {
+	//se valida que exista una particion Montada
+	if len(PartMount) == 0 {
+		fmt.Println("Error, no hay particiones montadas")
+		return false
+	}
+
+	//se obtienen los parametros
+	/* for i := 0; i < len(params); i++ {
+		array := strings.Split(params[i], "=")
+		param := strings.ToLower(array[0])
+		if param == ">user" {
+			user = array[1]
+		} else if param == ">pwd" {
+			password = array[1]
+		} else if param == ">id" {
+			id = array[1]
+		} else {
+			fmt.Println("El parametro ingresado no es valido")
+			return
+		}
+	} */
+
+	//se validan los parametros obligatorios
+	if user == "" || password == "" || id == "" {
+		fmt.Println("Error, parametro obligatorio vacio")
+		return false
+	}
+	//se valida que no haya una sesion iniciada
+	if ItemLogin.Iniciado {
+		fmt.Println("Error, ya hay una sesion iniciada")
+		return false
+	}
+	//se busca el id en las particiones montadas
+	flag := false
+	item := itemMount{}
+	for i := 0; i < len(PartMount); i++ {
+		if PartMount[i].Id == id {
+			flag = true
+			item = PartMount[i]
+			break
+		}
+	}
+	if !flag {
+		fmt.Println("Error, el id dela particion montada no existe")
+		return false
+	}
+	//vamos a verificar si es el root
+	if user == "root" && password == "123" {
+		ItemLogin.Iniciado = true
+		ItemLogin.Admin = true
+		ItemLogin.User = user
+		ItemLogin.LoginItem = item
+		ItemLogin.Grupo = "root"
+		ItemLogin.Grupo_id = "1"
+		ItemLogin.User_id = "1"
+		fmt.Println("Inicion de sesion exitoso, Bienvenido root")
+		return false
+	} else {
+
+		file_content := contenidoUsers(item)
+		if len(file_content) == 0 {
+			fmt.Println("Error, no se pudo recuperar el contenido del archivo users.txt")
+			return false
+		}
+		//se separa por saltos de linea y luego por comas
+		encounter := false
+		array_users := strings.Split(file_content, "\n")
+
+		for i := 0; i < len(array_users); i++ {
+			array := strings.Split(array_users[i], ",")
+			if array[0] != "0" {
+				if len(array) == 5 {
+					if array[3] == user && array[4] == password {
+						encounter = true
+						ItemLogin.Iniciado = true
+						ItemLogin.Admin = false
+						ItemLogin.User = user
+						ItemLogin.LoginItem = item
+						ItemLogin.Grupo = array[3]
+						ItemLogin.Grupo_id = ""
+						ItemLogin.User_id = array[0]
+						break
+					}
+				}
+			}
+		}
+		if encounter {
+			//se hara lo mismo pero para encontrar el id del grupo, no se si ha de servir de algo pero por si las moscas
+			for i := 0; i < len(array_users); i++ {
+				array := strings.Split(array_users[i], ",")
+				if array[0] != "0" {
+					if len(array) == 3 {
+						if ItemLogin.Grupo == array[3] {
+							ItemLogin.Grupo_id = array[0]
+							break
+						}
+					}
+				}
+			}
+			fmt.Println("Inicio de sesion exitoso, Bienvenido ", user)
+			cadRespuesta = "Inicio de sesion exitoso, Bienvenido " + user
+			return true
+		} else {
+			fmt.Println("Error, usuario o contrasena incorrecto")
+			cadRespuesta = "Error, usuario o contrasena incorrecto"
+			return false
+		}
+	}
+}
+
 func login(params []string) {
 	var user string
 	var password string
@@ -32,6 +143,7 @@ func login(params []string) {
 			return
 		}
 	}
+
 	//se validan los parametros obligatorios
 	if user == "" || password == "" || id == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
