@@ -16,6 +16,10 @@ function Inicio() {
     };
     reader.readAsText(file);
   };
+
+  const handleChange = (event) => {
+    setFileContent(event.target.value);
+  };
   async function ejecutar(){
     const response = await fetch('http://localhost:3000/execute', {
       method: 'POST',
@@ -27,6 +31,10 @@ function Inicio() {
     const data = await response.json()
     console.log(data.message)
     setContentConsole(data.message)
+  }
+  const limpiar = () => {
+    //setResult(result.slice(0, result.length -1))  
+    setFileContent("")
   }
 
   return (
@@ -54,11 +62,15 @@ function Inicio() {
               name="texti"
               type="textarea"
               rows={12}
+              onChange={handleChange}
               value={fileContent}
             />
           </FormGroup>
-          <Button style={{width: "100%"}} onClick={ejecutar}>
+          <Button style={{width: "49%", marginRight: "10px"}} onClick={ejecutar}>
             Ejecutar
+          </Button>
+          <Button style={{width: "48%", marginLeft: "10px"}} onClick={limpiar}>
+            Limpiar
           </Button>
           <br/><br/>
           <FormGroup>

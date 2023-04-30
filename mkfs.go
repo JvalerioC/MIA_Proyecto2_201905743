@@ -27,16 +27,19 @@ func mkfs(params []string) {
 				type_ = "Full"
 			} else {
 				fmt.Println("Error, el valor ingresado para el parametro type no es valido")
+				cadRespuesta += "Error, el valor ingresado para el parametro type no es valido \n"
 				return
 			}
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido \n"
 			return
 		}
 	}
 	//se validan los parametros
 	if id == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio \n"
 		return
 	}
 	if type_ == "" {
@@ -53,6 +56,7 @@ func mkfs(params []string) {
 	//se valida que se haya encontrado la particion montada
 	if item.Id == "" {
 		fmt.Println("Error, no existe una particion montada con el id ingresado")
+		cadRespuesta += "Error, no existe una particion montada con el id ingresado \n"
 		return
 	}
 	//se comienza con el formateo de la particion
@@ -250,5 +254,6 @@ func mkfs(params []string) {
 	}
 	disk_partition.Close()
 	fmt.Println("Particion formateada correctamente")
+	cadRespuesta += "Particion formateada correctamente\n"
 
 }

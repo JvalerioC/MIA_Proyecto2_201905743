@@ -11,6 +11,7 @@ func login2(user string, password string, id string) bool {
 	//se valida que exista una particion Montada
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particiones montadas")
+		cadRespuesta += "Error, no hay particiones montadas\n"
 		return false
 	}
 
@@ -33,11 +34,13 @@ func login2(user string, password string, id string) bool {
 	//se validan los parametros obligatorios
 	if user == "" || password == "" || id == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return false
 	}
 	//se valida que no haya una sesion iniciada
 	if ItemLogin.Iniciado {
 		fmt.Println("Error, ya hay una sesion iniciada")
+		cadRespuesta += "Error, ya hay una sesion iniciada\n"
 		return false
 	}
 	//se busca el id en las particiones montadas
@@ -52,6 +55,7 @@ func login2(user string, password string, id string) bool {
 	}
 	if !flag {
 		fmt.Println("Error, el id dela particion montada no existe")
+		cadRespuesta += "Error, el id dela particion montada no existe\n"
 		return false
 	}
 	//vamos a verificar si es el root
@@ -64,7 +68,8 @@ func login2(user string, password string, id string) bool {
 		ItemLogin.Grupo_id = "1"
 		ItemLogin.User_id = "1"
 		fmt.Println("Inicion de sesion exitoso, Bienvenido root")
-		return false
+		cadRespuesta += "Inicion de sesion exitoso, Bienvenido root\n"
+		return true
 	} else {
 
 		file_content := contenidoUsers(item)
@@ -108,11 +113,11 @@ func login2(user string, password string, id string) bool {
 				}
 			}
 			fmt.Println("Inicio de sesion exitoso, Bienvenido ", user)
-			cadRespuesta = "Inicio de sesion exitoso, Bienvenido " + user
+			cadRespuesta += "Inicio de sesion exitoso, Bienvenido " + user
 			return true
 		} else {
 			fmt.Println("Error, usuario o contrasena incorrecto")
-			cadRespuesta = "Error, usuario o contrasena incorrecto"
+			cadRespuesta += "Error, usuario o contrasena incorrecto"
 			return false
 		}
 	}
@@ -125,6 +130,7 @@ func login(params []string) {
 	//se valida que exista una particion Montada
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particiones montadas")
+		cadRespuesta += "Error, no hay particiones montadas\n"
 		return
 	}
 
@@ -140,6 +146,7 @@ func login(params []string) {
 			id = array[1]
 		} else {
 			fmt.Println("El parametro ingresado no es valido")
+			cadRespuesta += "El parametro ingresado no es valido\n"
 			return
 		}
 	}
@@ -147,11 +154,13 @@ func login(params []string) {
 	//se validan los parametros obligatorios
 	if user == "" || password == "" || id == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	//se valida que no haya una sesion iniciada
 	if ItemLogin.Iniciado {
 		fmt.Println("Error, ya hay una sesion iniciada")
+		cadRespuesta += "Error, ya hay una sesion iniciada\n"
 		return
 	}
 	//se busca el id en las particiones montadas
@@ -166,6 +175,7 @@ func login(params []string) {
 	}
 	if !flag {
 		fmt.Println("Error, el id dela particion montada no existe")
+		cadRespuesta += "Error, el id de la particion montada no existe\n"
 		return
 	}
 	//vamos a verificar si es el root
@@ -178,12 +188,14 @@ func login(params []string) {
 		ItemLogin.Grupo_id = "1"
 		ItemLogin.User_id = "1"
 		fmt.Println("Inicion de sesion exitoso, Bienvenido root")
+		cadRespuesta += "Inicion de sesion exitoso, Bienvenido root\n"
 		return
 	} else {
 
 		file_content := contenidoUsers(item)
 		if len(file_content) == 0 {
 			fmt.Println("Error, no se pudo recuperar el contenido del archivo users.txt")
+			cadRespuesta += "Inicion de sesion exitoso, Bienvenido root\n"
 			return
 		}
 		//se separa por saltos de linea y luego por comas
@@ -239,8 +251,10 @@ func logout() {
 		ItemLogin.Grupo_id = ""
 		ItemLogin.User_id = ""
 		fmt.Println("Cierre de sesion exitosa")
+		cadRespuesta += "Cierre de sesion exitosa\n"
 	} else {
 		fmt.Println("Error, no hay una sesion iniciada")
+		cadRespuesta += "Error, no hay una sesion iniciada\n"
 	}
 }
 
@@ -248,14 +262,17 @@ func mkgrp(params []string) {
 	//se hacen las validaciones para poder ejecutar este comando
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particion montada")
+		cadRespuesta += "Error, no hay particion montada \n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, no hay una sesion iniciada")
+		cadRespuesta += "Error, no hay una sesion iniciada \n"
 		return
 	}
 	if !ItemLogin.Admin {
 		fmt.Println("Error, el usuario no puede ejecutar este comando")
+		cadRespuesta += "Error, el usuario no puede ejecutar este comando \n"
 		return
 	}
 
@@ -268,16 +285,19 @@ func mkgrp(params []string) {
 			name = array[1]
 		} else {
 			fmt.Println("El parametro ingresado no es valido")
+			cadRespuesta += "El parametro ingresado no es valido \n"
 			return
 		}
 	}
 	//se validan los parametros obligatorios
 	if name == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio \n"
 		return
 	}
 	if len(name) > 10 {
 		fmt.Println("Error, el nombre del grupo no puede ser mayor a 10 caracteres")
+		cadRespuesta += "Error, el nombre del grupo no puede ser mayor a 10 caracteres \n"
 		return
 	}
 
@@ -285,6 +305,7 @@ func mkgrp(params []string) {
 	file_content := contenidoUsers(ItemLogin.LoginItem)
 	if len(file_content) == 0 {
 		fmt.Println("Error, no se pudo recuperar el contenido del archivo users.txt")
+
 		return
 	}
 	//se separa por saltos de linea y luego por comas
@@ -310,6 +331,7 @@ func mkgrp(params []string) {
 	}
 	if encounter {
 		fmt.Println("Error, el nombre de grupo ya existe")
+		cadRespuesta += "Error, el nombre de grupo ya existe \n"
 		return
 	}
 	//se agrega el nuevo grupo al archivo users.txt
@@ -404,6 +426,7 @@ func mkgrp(params []string) {
 						return
 					}
 					fmt.Println("Grupo ingresado con exito")
+					cadRespuesta += "Grupo ingresado con exito \n"
 					return
 				} else {
 					//se escribe el nuevo grupo en el bloque
@@ -423,6 +446,7 @@ func mkgrp(params []string) {
 						return
 					}
 					fmt.Println("Grupo ingresado con exito")
+					cadRespuesta += "Grupo ingresado con exito\n"
 					return
 				}
 			}
@@ -448,6 +472,7 @@ func mkgrp(params []string) {
 					return
 				}
 				fmt.Println("Grupo ingresado con exito")
+				cadRespuesta += "Grupo ingresado con exito\n"
 				return
 			}
 		}
@@ -458,14 +483,17 @@ func mkusr(params []string) {
 	//se hacen las validaciones para poder ejecutar este comando
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particion montada")
+		cadRespuesta += "Error, no hay particion montada\n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, no hay una sesion iniciada")
+		cadRespuesta += "Error, no hay una sesion iniciada\n"
 		return
 	}
 	if !ItemLogin.Admin {
 		fmt.Println("Error, el usuario no puede ejecutar este comando")
+		cadRespuesta += "Error, el usuario no puede ejecutar este comando\n"
 		return
 	}
 
@@ -484,16 +512,19 @@ func mkusr(params []string) {
 			group = array[1]
 		} else {
 			fmt.Println("El parametro ingresado no es valido")
+			cadRespuesta += "El parametro ingresado no es valido\n"
 			return
 		}
 	}
 	//se validan los parametros obligatorios
 	if username == "" || password == "" || group == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	if len(username) > 10 || len(password) > 10 {
 		fmt.Println("Error, el nombre del grupo no puede ser mayor a 10 caracteres")
+		cadRespuesta += "Error, el nombre del grupo no puede ser mayor a 10 caracteres\n"
 		return
 	}
 
@@ -531,10 +562,12 @@ func mkusr(params []string) {
 	}
 	if !encounter {
 		fmt.Println("Error, el nombre de grupo no existe")
+		cadRespuesta += "Error, el nombre de grupo no existe\n"
 		return
 	}
 	if encounter2 {
 		fmt.Println("Error, el nombre de usuario ya existe")
+		cadRespuesta += "Error, el nombre de usuario ya existe\n"
 		return
 	}
 	//se agrega el nuevo grupo al archivo users.txt
@@ -628,7 +661,8 @@ func mkusr(params []string) {
 						fmt.Println("Error, no se pudo escribir el inodo, mkuser")
 						return
 					}
-					fmt.Println("Grupo ingresado con exito")
+					fmt.Println("Usuario ingresado con exito")
+					cadRespuesta += "Usuario ingresado con exito\n"
 					return
 				} else {
 					//se escribe el nuevo grupo en el bloque
@@ -647,7 +681,8 @@ func mkusr(params []string) {
 						fmt.Println("Error, no se pudo escribir el inodo, mkgrp")
 						return
 					}
-					fmt.Println("Grupo ingresado con exito")
+					fmt.Println("Usuario ingresado con exito")
+					cadRespuesta += "Usuario ingresado con exito\n"
 					return
 				}
 			}
@@ -673,6 +708,7 @@ func mkusr(params []string) {
 					return
 				}
 				fmt.Println("Usuario ingresado con exito")
+				cadRespuesta += "Usuario ingresado con exito\n"
 				return
 			}
 		}
@@ -682,14 +718,17 @@ func mkusr(params []string) {
 func rmusr(params []string) {
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particiones montadas, rmusr")
+		cadRespuesta += "Error, no hay particiones montadas\n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, no hay sesion iniciada, rmusr")
+		cadRespuesta += "Error, no hay sesion iniciada\n"
 		return
 	}
 	if !ItemLogin.Admin {
 		fmt.Println("Error, el usuario no puede ejecutar este comando, rmusr")
+		cadRespuesta += "Error, el usuario no puede ejecutar este comando\n"
 		return
 	}
 
@@ -701,11 +740,13 @@ func rmusr(params []string) {
 			username = array[1]
 		} else {
 			fmt.Println("El parametro ingresdo no es valido")
+			cadRespuesta += "El parametro ingresado no es valido\n"
 			return
 		}
 	}
 	if username == "" {
 		fmt.Println("Error parametro obligatorio vacio")
+		cadRespuesta += "Error parametro obligatorio vacio\n"
 		return
 	}
 
@@ -798,12 +839,14 @@ func rmusr(params []string) {
 			}
 
 			fmt.Println("Usuario eliminado con exito")
+			cadRespuesta += "Usuario eliminado con exito\n"
 			break
 		}
 
 	}
 	if !encontrado {
 		fmt.Println("Error, el usuario a eliminar no esta registrado")
+		cadRespuesta += "Error, el usuario a eliminar no esta registrado\n"
 		return
 	}
 }
@@ -811,14 +854,17 @@ func rmusr(params []string) {
 func rmgrp(params []string) {
 	if len(PartMount) == 0 {
 		fmt.Println("Error, no hay particiones montadas, rmgrp")
+		cadRespuesta += "Error, no hay particiones montadas\n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, no hay sesion iniciada, rmgrp")
+		cadRespuesta += "Error, no hay sesion iniciada\n"
 		return
 	}
 	if !ItemLogin.Admin {
 		fmt.Println("Error, el usuario no puede ejecutar este comando, rmgrp")
+		cadRespuesta += "Error, el usuario no puede ejecutar este comando\n"
 		return
 	}
 
@@ -829,12 +875,14 @@ func rmgrp(params []string) {
 		if param == ">name" {
 			group = array[1]
 		} else {
-			fmt.Println("El parametro ingresdo no es valido")
+			fmt.Println("El parametro ingresado no es valido")
+			cadRespuesta += "El parametro ingresado no es valido\n"
 			return
 		}
 	}
 	if group == "" {
 		fmt.Println("Error parametro obligatorio vacio")
+		cadRespuesta += "Error parametro obligatorio vacio\n"
 		return
 	}
 
@@ -909,12 +957,14 @@ func rmgrp(params []string) {
 				return
 			}
 			fmt.Println("Grupo eliminado con exito")
+			cadRespuesta += "Grupo eliminado con exito\n"
 			break
 		}
 
 	}
 	if !encontrado {
 		fmt.Println("Error, el grupo a eliminar no esta registrado")
+		cadRespuesta += "Error, el grupo a eliminar no esta registrado\n"
 		return
 	}
 

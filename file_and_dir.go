@@ -12,10 +12,12 @@ import (
 func mkfile(params []string) {
 	if len(PartMount) == 0 {
 		fmt.Println("Error, No hay particiones montadas")
+		cadRespuesta += "Error, No hay particiones montadas\n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, No hay una sesion iniciada")
+		cadRespuesta += "Error, No hay una sesion iniciada\n"
 		return
 	}
 	//se obtienen los parametros
@@ -36,11 +38,13 @@ func mkfile(params []string) {
 		} else if param == ">r" {
 			if len(array) != 1 {
 				fmt.Println("Error, parametro no valido para >r")
+				cadRespuesta += "Error, parametro no valido para >r\n"
 				return
 			}
 			r = true
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido\n"
 			return
 		}
 	}
@@ -48,6 +52,7 @@ func mkfile(params []string) {
 	//se validan los parametros obligatorios
 	if path == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 
@@ -64,6 +69,7 @@ func mkfile(params []string) {
 	if size != 0 {
 		if size < 0 {
 			fmt.Println("Error, el tamaño debe ser mayor a cero")
+			cadRespuesta += "Error, el tamaño debe ser mayor a cero\n"
 			return
 		}
 		createFileS(array_path, file, r, size)
@@ -76,10 +82,12 @@ func mkfile(params []string) {
 func mkdir(params []string) {
 	if len(PartMount) == 0 {
 		fmt.Println("Error, No hay particiones montadas")
+		cadRespuesta += "Error, No hay particiones montadas\n"
 		return
 	}
 	if !ItemLogin.Iniciado {
 		fmt.Println("Error, No hay una sesion iniciada")
+		cadRespuesta += "Error, No hay una sesion iniciada\n"
 		return
 	}
 	//se obtienen los parametros
@@ -94,11 +102,13 @@ func mkdir(params []string) {
 		} else if param == ">r" {
 			if len(array) != 1 {
 				fmt.Println("Error, parametro no valido para >r")
+				cadRespuesta += "Error, parametro no valido para >r\n"
 				return
 			}
 			r = true
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido\n"
 			return
 		}
 	}
@@ -106,6 +116,7 @@ func mkdir(params []string) {
 	//se validan los parametros obligatorios
 	if path == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 
@@ -181,6 +192,7 @@ func createDir(array_path []string, r bool) {
 		} else {
 			if len(array_path) == i+1 {
 				fmt.Println("Error, la carpeta ya existe")
+				cadRespuesta += "Error, la carpeta ya existe \n"
 				return
 			}
 			//se recupera el inodo
@@ -193,7 +205,7 @@ func createDir(array_path []string, r bool) {
 		}
 	}
 	fmt.Println("Carpeta creada exitosamente")
-
+	cadRespuesta += "Carpeta creada exitosamente\n"
 }
 
 // funcion para encontrar un inodo, retorna el numero de inodo que coincide
@@ -260,6 +272,7 @@ func createInodeCarpeta(inode Inodo, sb *SuperBloque, pos_inodo int, name string
 	uid = strings.TrimRight(uid, "\x00") //id de usuario
 	if ItemLogin.Grupo_id != gid && ItemLogin.User_id != uid {
 		fmt.Println("Error, no se tienen los permisos para crear la carpeta")
+		cadRespuesta += "Error, no se tienen los permisos para crear la carpeta\n"
 		return 0
 	}
 
@@ -508,6 +521,7 @@ func createFileB(array_path []string, file string, r bool) {
 
 			} else {
 				fmt.Println("Error, la carpeta no existe, esta no se puede crear")
+				cadRespuesta += "Error, la carpeta no existe, esta no se puede crear\n"
 				return
 			}
 		} else {
@@ -531,6 +545,7 @@ func createFileB(array_path []string, file string, r bool) {
 		if temp_inodo.I_block[i][0] == 0 {
 			createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 			fmt.Println("El archivo ha sido creado.")
+			cadRespuesta += "El archivo ha sido creado.\n"
 			return
 		} else {
 			//se recupera el bloque
@@ -552,13 +567,13 @@ func createFileB(array_path []string, file string, r bool) {
 					c := string(bc.B_content[j].B_name[:])
 					c = strings.TrimRight(c, "\x00")
 					if c == file {
-						fmt.Println("Desea sobreescribir el archivo, Y/N")
+						/* fmt.Println("Desea sobreescribir el archivo, Y/N")
 						var confirm string
 						fmt.Scanln(&confirm)
 						if confirm != "Y" {
 							fmt.Println("No sobreescribira el archivo ")
 							return
-						}
+						} */
 						c = string(bc.B_content[j].B_inodo[:])
 						c = strings.TrimRight(c, "\x00")
 						poss, err := strconv.Atoi(c) //inicio de inodos
@@ -571,6 +586,7 @@ func createFileB(array_path []string, file string, r bool) {
 				} else {
 					createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 					fmt.Println("El archivo ha sido creado.")
+					cadRespuesta += "El archivo ha sido creado.\n"
 					i = 16
 					break
 				}
@@ -630,6 +646,7 @@ func createFileS(array_path []string, file string, r bool, size int) {
 
 			} else {
 				fmt.Println("Error, la carpeta no existe, esta no se puede crear")
+				cadRespuesta += "Error, la carpeta no existe, esta no se puede crear\n"
 				return
 			}
 		} else {
@@ -656,6 +673,7 @@ func createFileS(array_path []string, file string, r bool, size int) {
 		if temp_inodo.I_block[i][0] == 0 {
 			createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 			fmt.Println("El archivo ha sido creado.")
+			cadRespuesta += "El archivo ha sido creado.\n"
 			return
 		} else {
 			//se recupera el bloque
@@ -677,13 +695,13 @@ func createFileS(array_path []string, file string, r bool, size int) {
 					c := string(bc.B_content[j].B_name[:])
 					c = strings.TrimRight(c, "\x00")
 					if c == file {
-						fmt.Println("Desea sobreescribir el archivo, Y/N")
+						/* fmt.Println("Desea sobreescribir el archivo, Y/N")
 						var confirm string
 						fmt.Scanln(&confirm)
 						if confirm != "Y" {
 							fmt.Println("No sobreescribira el archivo ")
 							return
-						}
+						} */
 						c = string(bc.B_content[j].B_inodo[:])
 						c = strings.TrimRight(c, "\x00")
 						poss, err := strconv.Atoi(c) //inicio de inodos
@@ -696,6 +714,7 @@ func createFileS(array_path []string, file string, r bool, size int) {
 				} else {
 					createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 					fmt.Println("El archivo ha sido creado.")
+					cadRespuesta += "El archivo ha sido creado.\n"
 					i = 16
 					break
 				}
@@ -756,6 +775,7 @@ func createFileW(array_path []string, file string, r bool, content string) {
 
 			} else {
 				fmt.Println("Error, la carpeta no existe, esta no se puede crear")
+				cadRespuesta += "Error, la carpeta no existe, esta no se puede crear\n"
 				return
 			}
 		} else {
@@ -783,6 +803,7 @@ func createFileW(array_path []string, file string, r bool, content string) {
 		if temp_inodo.I_block[i][0] == 0 {
 			createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 			fmt.Println("El archivo ha sido creado.")
+			cadRespuesta += "El archivo ha sido creado.\n"
 			return
 		} else {
 			//se recupera el bloque
@@ -804,13 +825,13 @@ func createFileW(array_path []string, file string, r bool, content string) {
 					c := string(bc.B_content[j].B_name[:])
 					c = strings.TrimRight(c, "\x00")
 					if c == file {
-						fmt.Println("Desea sobreescribir el archivo, Y/N")
+						/* fmt.Println("Desea sobreescribir el archivo, Y/N")
 						var confirm string
 						fmt.Scanln(&confirm)
 						if confirm != "Y" {
 							fmt.Println("No sobreescribira el archivo ")
 							return
-						}
+						} */
 						c = string(bc.B_content[j].B_inodo[:])
 						c = strings.TrimRight(c, "\x00")
 						poss, err := strconv.Atoi(c) //inicio de inodos
@@ -823,6 +844,7 @@ func createFileW(array_path []string, file string, r bool, content string) {
 				} else {
 					createInodeArchivo(temp_inodo, &sb, pos_inodo, file_content, file)
 					fmt.Println("El archivo ha sido creado.")
+					cadRespuesta += "El archivo ha sido creado.\n"
 					i = 16
 					break
 				}
@@ -841,6 +863,7 @@ func reWriteArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content string,
 	uid = strings.TrimRight(uid, "\x00") //id de usuario
 	if ItemLogin.Grupo_id != gid && ItemLogin.User_id != uid {
 		fmt.Println("Error, no se tienen los permisos para crear la carpeta")
+		cadRespuesta += "Error, no se tienen los permisos para crear la carpeta\n"
 		return
 	}
 
@@ -859,14 +882,6 @@ func reWriteArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content string,
 		return
 	}
 
-	//se recupera el primer inodo libre
-	c = string((*sb).S_first_ino[:])
-	c = strings.TrimRight(c, "\x00")
-	pos_first_inodo, err := strconv.Atoi(c) //inicio de inodos
-	if err != nil {
-		fmt.Println("Error, no se pudo leer el inodo raiz, cia")
-		return
-	}
 	//se recupera el primer bloque libre
 	c = string((*sb).S_first_blo[:])
 	c = strings.TrimRight(c, "\x00")
@@ -898,36 +913,8 @@ func reWriteArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content string,
 			fmt.Println("Error, no se pudo escribir el inodo, cia")
 			return
 		}
-		//se actualiza el bitmap de inodos
-		flag = write_bitmap_inodos()
-		if !flag {
-			fmt.Println("Error, no se pudo escribir el bitmap de inodos, cia")
-			return
-		}
-		//se actualizan el superbloque
-		copy((*sb).S_first_ino[:], strconv.Itoa(pos_first_inodo+1))
-		pos_first_inodo++
-		c = string((*sb).S_free_inodes_count[:])
-		c = strings.TrimRight(c, "\x00")
-		free_inodes, err := strconv.Atoi(c) //posicion del inicio de bloques
-		if err != nil {
-			fmt.Println("Error, no se pudo obtener free inodes, cia")
-			return
-		}
-		copy((*sb).S_free_inodes_count[:], strconv.Itoa(free_inodes-1))
-		c = string(ItemLogin.LoginItem.Part.Part_start[:])
-		c = strings.TrimRight(c, "\x00")
-		posicion_superbloque, err1 := strconv.Atoi(c)
-		if err1 != nil {
-			fmt.Println("Error posicionando el puntero superbloque, cia")
-			return
-		}
-		flag = write_sb((*sb), ItemLogin.LoginItem.Path, posicion_superbloque)
-		if !flag {
-			fmt.Println("Error, no se pudo escribir el superbloque, cia")
-			return
-		}
-		fmt.Println("todo nice")
+
+		cadRespuesta += "El archivo ha sido sobreescrito correctamente\n"
 		return
 
 	}
@@ -976,28 +963,14 @@ func reWriteArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content string,
 	}
 
 	//se escribe el inodo
-	flag := write_inodo(bi, pos_inode_start+(int(unsafe.Sizeof(Inodo{}))*pos_first_inodo))
+	flag := write_inodo(bi, pos_inode_start+(int(unsafe.Sizeof(Inodo{}))*pos_inodo))
 	if !flag {
 		fmt.Println("Error, no se pudo escribir el inodo, cia")
 		return
 	}
-	//se actualiza el bitmap de inodos
-	flag = write_bitmap_inodos()
-	if !flag {
-		fmt.Println("Error, no se pudo escribir el bitmap de inodos, cia")
-		return
-	}
+
 	//se actualizan el superbloque
-	copy((*sb).S_first_ino[:], strconv.Itoa(pos_first_inodo+1))
-	copy((*sb).S_first_ino[:], strconv.Itoa(pos_first_block))
-	c = string((*sb).S_free_inodes_count[:])
-	c = strings.TrimRight(c, "\x00")
-	free_inodes, err := strconv.Atoi(c) //posicion del inicio de bloques
-	if err != nil {
-		fmt.Println("Error, no se pudo obtener free inodes, cia")
-		return
-	}
-	copy((*sb).S_free_inodes_count[:], strconv.Itoa(free_inodes-1))
+	copy((*sb).S_first_blo[:], strconv.Itoa(pos_first_block))
 	c = string(ItemLogin.LoginItem.Part.Part_start[:])
 	c = strings.TrimRight(c, "\x00")
 	posicion_superbloque, err1 := strconv.Atoi(c)
@@ -1011,6 +984,7 @@ func reWriteArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content string,
 		return
 	}
 	fmt.Println("todo nice")
+	cadRespuesta += "El archivo ha sido sobreescrito correctamente\n"
 
 }
 
@@ -1024,6 +998,7 @@ func createInodeArchivo(inodo Inodo, sb *SuperBloque, pos_inodo int, content str
 	uid = strings.TrimRight(uid, "\x00") //id de usuario
 	if ItemLogin.Grupo_id != gid && ItemLogin.User_id != uid {
 		fmt.Println("Error, no se tienen los permisos para crear la carpeta")
+		cadRespuesta += "Error, no se tienen los permisos para crear la carpeta\n"
 		return
 	}
 

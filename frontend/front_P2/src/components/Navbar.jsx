@@ -28,6 +28,11 @@ function Navbar_() {
               Cargar Archivo
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink href="/reports">
+              Reportes
+            </NavLink>
+          </NavItem>
         </Nav>
       </Navbar>
     </div>

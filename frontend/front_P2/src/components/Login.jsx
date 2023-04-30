@@ -26,7 +26,12 @@ function Login() {
       },
     })
     const data = await response.json()
-    console.log(data.message)
+    alert(data.message);
+    console.log(data)
+    /* if (data.status === "true") {
+      const history = useHistory();
+      history.push('/');
+    } */
   }
   return (
     <>

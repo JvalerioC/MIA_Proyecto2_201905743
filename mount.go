@@ -20,17 +20,20 @@ func mount(params []string) {
 			name = array[1]
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido\n"
 			return
 		}
 	}
 	if name == "" || path == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	//verificamos si el disco existe o no
 	_, err1 := os.Stat(path)
 	if os.IsNotExist(err1) {
 		fmt.Println("Error, el disco no existe")
+		cadRespuesta += "Error, el disco no existe\n"
 		return
 	}
 	mbr, flag := read_MBR(path)
@@ -48,6 +51,7 @@ func mount(params []string) {
 		if name_ == name {
 			if mbr.Mbr_Partition[i].Part_status[0] == '1' {
 				fmt.Println("Error, la particion ya esta montada")
+				cadRespuesta += "Error, la particion ya esta montada\n"
 				return
 			}
 			i_mount.Part = mbr.Mbr_Partition[i]
@@ -59,7 +63,8 @@ func mount(params []string) {
 	}
 	// se valida que si se recupero bien la particion
 	if i_mount.Part.Part_size[0] == '0' {
-		fmt.Println("no existe una particion  con el nombre ingresado")
+		fmt.Println("No existe una particion  con el nombre ingresado")
+		cadRespuesta += "No existe una particion  con el nombre ingresado\n"
 		return
 	}
 	letter := ""
@@ -97,12 +102,16 @@ func mount(params []string) {
 	i_mount.Number = count_disk
 	PartMount = append(PartMount, i_mount)
 	fmt.Println("Particion montada exitosamente")
+	cadRespuesta += "Particion montada exitosamente\n\n"
 	fmt.Println()
 
 	//se imprimen las particiones montadas
 	fmt.Println(" Particiones Montadas ")
 	fmt.Println("----------------------")
+	cadRespuesta += " Particiones Montadas \n"
+	cadRespuesta += "----------------------\n"
 	for _, item := range PartMount {
 		fmt.Println(item.Id)
+		cadRespuesta += item.Id + "\n"
 	}
 }

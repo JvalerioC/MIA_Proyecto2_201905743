@@ -56,6 +56,7 @@ func analizador(entrada string) {
 		mkdir(result[1:])
 	} else {
 		fmt.Println("El comando ingresado no es valido")
+		cadRespuesta += "El comando ingresado no es valido\n"
 		return
 	}
 }

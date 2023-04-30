@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,18 +15,43 @@ var PartMount []itemMount
 var disc_counter int
 var ItemLogin Usuario
 var cadRespuesta string
+var reportes []string
+
+func ReadFileToBase64(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	fmt.Println(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	// Create a buffer to store the file content
+	fileInfo, _ := file.Stat()
+	var size int64 = fileInfo.Size()
+	buffer := make([]byte, size)
+
+	// Read the file content into the buffer
+	_, err = file.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the file content to Base64
+	encoded := base64.StdEncoding.EncodeToString(buffer)
+	return encoded, nil
+}
 
 func main() {
 
 	app := fiber.New()
 	app.Use(cors.New())
 
-	fmt.Println("**********************************************************")
+	/* fmt.Println("**********************************************************")
 	fmt.Println("**                                                      **")
 	fmt.Println("**               201905743  -  PROYECTO 2               **")
 	fmt.Println("**                                                      **")
 	fmt.Println("**********************************************************")
-
+	*/
 	/* app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
@@ -31,6 +59,7 @@ func main() {
 	})) */
 
 	app.Post("/execute", func(c *fiber.Ctx) error {
+		cadRespuesta = ""
 		var requestBody map[string]interface{}
 		if err := c.BodyParser(&requestBody); err != nil {
 			return err
@@ -72,11 +101,12 @@ func main() {
 			analizador(entrada)
 		}
 		return c.JSON(&fiber.Map{
-			"message": "Exito",
+			"message": cadRespuesta,
 		})
 	})
 
 	app.Post("/login", func(c *fiber.Ctx) error {
+		cadRespuesta = ""
 		var requestBody map[string]interface{}
 		if err := c.BodyParser(&requestBody); err != nil {
 			return err
@@ -85,9 +115,39 @@ func main() {
 		pass := requestBody["password"].(string)
 		id := requestBody["id"].(string)
 		fmt.Println(user, pass, id)
-		login2(user, pass, id)
+		status := login2(user, pass, id)
 		return c.JSON(&fiber.Map{
 			"message": cadRespuesta,
+			"status":  status,
+		})
+	})
+
+	app.Get("/reports", func(c *fiber.Ctx) error {
+		return c.JSON(&fiber.Map{
+			"message": reportes,
+		})
+	})
+
+	app.Get("/reports/:id", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		fmt.Println(id)
+		for i := 0; i < len(reportes); i++ {
+			d := strconv.Itoa(i)
+			if d == id {
+				fmt.Println("si son iguales")
+				encodedContent, err := ReadFileToBase64(reportes[i])
+				if err != nil {
+					return c.JSON(&fiber.Map{
+						"message": "Error",
+					})
+				}
+				return c.JSON(&fiber.Map{
+					"message": encodedContent,
+				})
+			}
+		}
+		return c.JSON(&fiber.Map{
+			"message": "No se encontro el reporte",
 		})
 	})
 

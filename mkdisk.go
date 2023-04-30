@@ -24,10 +24,12 @@ func mkdisk(params []string) {
 			value, err := strconv.Atoi(array[1])
 			if err != nil {
 				fmt.Println("Error, el valor ingresado para el parametro size no es valido")
+				cadRespuesta += "Error, el valor ingresado para el parametro size no es valido\n"
 				return
 			}
 			if value <= 0 {
 				fmt.Println("Error, el valor ingresado para el parametro size debe ser mayor a 0")
+				cadRespuesta += "Error, el valor ingresado para el parametro size debe ser mayor a 0\n"
 				return
 			}
 			size = value
@@ -39,6 +41,7 @@ func mkdisk(params []string) {
 				unit = 'K'
 			} else {
 				fmt.Println("Error, el valor ingresado para el parametro unit no es valido")
+				cadRespuesta += "Error, el valor ingresado para el parametro unit no es valido\n"
 				return
 			}
 		} else if param == ">path" {
@@ -53,16 +56,19 @@ func mkdisk(params []string) {
 				fit = 'W'
 			} else {
 				fmt.Println("Error, el valor ingresado para el parametro fit no es valido")
+				cadRespuesta += "Error, el valor ingresado para el parametro fit no es valido\n"
 				return
 			}
 		} else {
 			fmt.Println("El parametro ingresado no es valido")
+			cadRespuesta += "El parametro ingresado no es valido\n"
 			return
 		}
 	}
 	//ya obtenidos los parametros se hacen validaciones
 	if size == 0 || path == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	if unit == 0 {
@@ -85,6 +91,7 @@ func mkdisk(params []string) {
 		//fmt.Println()
 	} else {
 		fmt.Println("Error, el disco ya existe")
+		cadRespuesta += "Error, el disco ya existe\n"
 		return
 	}
 	//creamos el archivo
@@ -131,6 +138,7 @@ func mkdisk(params []string) {
 	flag := write_MBR(mbr, path)
 	if flag {
 		fmt.Println("Disco creado exitosamente")
+		cadRespuesta += "Disco creado exitosamente\n"
 		//intentaremos recuperar el mbr para saber si se esta escribiendo bien
 		/* mbr2 := read_MBR(path)
 		fmt.Println("Tamaño del disco: ", string(mbr2.Mbr_tamano[:]))

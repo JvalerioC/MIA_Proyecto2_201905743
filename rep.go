@@ -32,12 +32,14 @@ func rep(params []string) {
 			ruta = array[1]
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido\n"
 			return
 		}
 	}
 	//validar parametros obligatorios
 	if name == "" || path == "" || id == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	//se busca el id
@@ -51,6 +53,7 @@ func rep(params []string) {
 	//se valida que exista el id
 	if item.Id == "" {
 		fmt.Println("Error, el parametro id ingresado para el reporte no existe")
+		cadRespuesta += "Error, el parametro id ingresado para el reporte no existe\n"
 		return
 	}
 
@@ -82,6 +85,7 @@ func rep(params []string) {
 		reportTree(item, path)
 	} else {
 		fmt.Println("Error, el nombre del reporte no es valido")
+		cadRespuesta += "Error, el nombre del reporte no es valido\n"
 		return
 	}
 }
@@ -287,8 +291,11 @@ func reportDisk(item itemMount, path string) {
 	flag = createReport(dot, "disk", path)
 	if flag {
 		fmt.Println("Reporte creado con exito")
+		cadRespuesta += "Reporte creado con exito\n"
+		reportes = append(reportes, path)
 	} else {
 		fmt.Println("Error, creando el reporte")
+		cadRespuesta += "Error, creando el reporte\n"
 	}
 }
 
@@ -392,8 +399,11 @@ func reportSB(item itemMount, path string) {
 	flag = createReport(dot, "sb", path)
 	if flag {
 		fmt.Println("Reporte creado con exito")
+		cadRespuesta += "Reporte creado con exito\n"
+		reportes = append(reportes, path)
 	} else {
 		fmt.Println("Error, creando el reporte")
+		cadRespuesta += "Error, creando el reporte\n"
 	}
 }
 
@@ -535,6 +545,8 @@ func reportFile(item itemMount, path string, ruta string) {
 	}
 	file.Close()
 	fmt.Println("Reporte creado con exito")
+	cadRespuesta += "Reporte creado con exito\n"
+	reportes = append(reportes, path)
 }
 
 func reportTree(item itemMount, path string) {
@@ -647,8 +659,11 @@ func reportTree(item itemMount, path string) {
 	flag = createReport(dot, "tree", path)
 	if flag {
 		fmt.Println("Reporte creado con exito")
+		cadRespuesta += "Reporte creado con exito\n"
+		reportes = append(reportes, path)
 	} else {
 		fmt.Println("Error, creando el reporte")
+		cadRespuesta += "Error, creando el reporte\n"
 	}
 }
 

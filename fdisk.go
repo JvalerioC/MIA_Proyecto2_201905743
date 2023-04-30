@@ -76,12 +76,14 @@ func fdisk(params []string) {
 			name = array[1]
 		} else {
 			fmt.Println("Error, el parametro ingresado no es valido")
+			cadRespuesta += "Error, el parametro ingresado no es valido\n"
 			return
 		}
 	}
 	//se validan los parametros obligatorios
 	if size == 0 || path == "" || name == "" {
 		fmt.Println("Error, parametro obligatorio vacio")
+		cadRespuesta += "Error, parametro obligatorio vacio\n"
 		return
 	}
 	//se asignan los valores por default a los parametros opcionales, si estos estan vacios
@@ -98,6 +100,7 @@ func fdisk(params []string) {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		fmt.Println("Error, el disco no existe")
+		cadRespuesta += "Error, el disco no existe\n"
 		return
 	}
 	//recuperamos el MBR
@@ -111,6 +114,7 @@ func fdisk(params []string) {
 	for i := 0; i < 4; i++ {
 		if name == string(mbr.Mbr_Partition[i].Part_name[:len(name)]) && mbr.Mbr_Partition[i].Part_name[len(name)] == 0 {
 			fmt.Println("Error, el nombre dela particion ya esta en uso")
+			cadRespuesta += "Error, el nombre de la particion ya esta en uso\n"
 			return
 		}
 	}
@@ -128,6 +132,7 @@ func fdisk(params []string) {
 				//se valida el nombre
 				if name == string(extended.Part_name[:len(name)]) && extended.Part_name[len(name)] == 0 {
 					fmt.Println("Error, el nombre dela particion ya esta en uso")
+					cadRespuesta += "Error, el nombre de la particion ya esta en uso\n"
 					return
 				}
 				//se lee la siguiente particion logica
@@ -157,6 +162,7 @@ func fdisk(params []string) {
 	//se valida que no se haya llegado al limite de particiones y que la particion no sea logica, si es asi retorna
 	if countPart == 4 && type_ != 'L' {
 		fmt.Println("Error, ya hay 4 particiones en el disco")
+		cadRespuesta += "Error, ya hay 4 particiones en el disco\n"
 		return
 	}
 	//ahora se ve que tipo de particion es
@@ -166,9 +172,11 @@ func fdisk(params []string) {
 		createPartition(size, unit, type_, path, name, fit)
 	} else if type_ == 'E' && countExtended == 1 {
 		fmt.Println("Error, ya hay una particion extendida")
+		cadRespuesta += "Error, ya hay una particion extendida\n"
 		return
 	} else if type_ == 'L' && countExtended == 0 {
 		fmt.Println("Error, no hay particiones extendidas")
+		cadRespuesta += "Error, no hay particiones extendidas\n"
 		return
 	} else if type_ == 'L' && countExtended == 1 {
 		createLogic(size, unit, type_, path, name, fit)
@@ -237,6 +245,7 @@ func createLogic(size int, unit byte, type_ byte, path string, name string, fit 
 				position = d
 				if (position + finalsize) > part_size {
 					fmt.Println("Error, no es posible ingresar particion, no hay espacio disponible")
+					cadRespuesta += "Error, no es posible ingresar particion, no hay espacio disponible\n"
 					return
 				}
 			} else {
@@ -259,6 +268,7 @@ func createLogic(size int, unit byte, type_ byte, path string, name string, fit 
 				position_last = d
 				if (position + finalsize) > part_size {
 					fmt.Println("Error, no es posible ingresar particion, no hay espacio disponible")
+					cadRespuesta += "Error, no es posible ingresar particion, no hay espacio disponible\n"
 					return
 				}
 			}
@@ -294,6 +304,7 @@ func createLogic(size int, unit byte, type_ byte, path string, name string, fit 
 	}
 	if flag_e {
 		fmt.Println("Particion logica creada exitosamente")
+		cadRespuesta += "Particion logica creada exitosamente\n"
 	}
 }
 
@@ -384,6 +395,7 @@ func createPartition(size int, unit byte, type_ byte, path string, name string, 
 			position += d
 			if (position + finalsize) > disk_size {
 				fmt.Println("Error, no es posible ingresar particion, no hay espacio disponible")
+				cadRespuesta += "Error, no es posible ingresar particion, no hay espacio disponible\n"
 				return
 			}
 
@@ -391,4 +403,5 @@ func createPartition(size int, unit byte, type_ byte, path string, name string, 
 	}
 
 	fmt.Println("Particion creada exitosamente")
+	cadRespuesta += "Particion creada exitosamente\n"
 }
