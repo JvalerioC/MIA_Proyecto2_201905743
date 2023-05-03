@@ -864,6 +864,7 @@ func createReport(dot string, name string, path string) bool {
 		fmt.Println("Error, al leer el archivo dot")
 		return false
 	}
+	fmt.Println("extension: ", extension)
 	formato := ""
 	if extension == ".png" {
 		formato = "-Tpng"

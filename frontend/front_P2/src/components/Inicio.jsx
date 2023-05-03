@@ -21,7 +21,7 @@ function Inicio() {
     setFileContent(event.target.value);
   };
   async function ejecutar(){
-    const response = await fetch('http://localhost:3000/execute', {
+    const response = await fetch('http://34.16.139.123:3000/execute', {
       method: 'POST',
       body: JSON.stringify({ fileContent }),
       headers: {

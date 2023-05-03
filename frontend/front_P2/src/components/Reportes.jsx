@@ -7,7 +7,7 @@ function Reportes() {
   const [fileType, setFileType] = useState("");
 
   const handleRepSelect = async (rep, report) => {
-    const response = await fetch(`http://localhost:3000/reports/${rep}`);
+    const response = await fetch(`http://34.16.139.123:3000/reports/${rep}`);
     const data = await response.json();
     console.log(data.message)
     const decodedContent = atob(data.message)
@@ -47,7 +47,7 @@ function Reportes() {
   }
 
   const contenidoReporte = async () => {
-    const response = await fetch(`http://localhost:3000/reports`);
+    const response = await fetch(`http://34.16.139.123:3000/reports`);
     const data = await response.json();
     //const data = await response.text()
     console.log(data)

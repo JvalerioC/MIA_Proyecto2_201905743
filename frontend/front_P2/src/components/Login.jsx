@@ -18,7 +18,7 @@ function Login() {
 
 
   async function loguear(){
-    const response = await fetch('http://localhost:3000/login', {
+    const response = await fetch('http://34.16.139.123:3000/login', {
       method: 'POST',
       body: JSON.stringify({ id, username, password }),
       headers: {
